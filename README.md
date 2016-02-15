@@ -17,7 +17,9 @@
 - 4)取url中的token作为变量page_token的值.
 
 # run
+```
 $ cd ./weixin_users
 $ ls
 README.md  scrapy.cfg  weixin_users
 $ scrapy crawl contact
+```
