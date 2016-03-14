@@ -15,9 +15,11 @@
 # 修改文件weixin_configuration.py中定义的变量值
 修改weixin_configuration.py中变量的值:
 - 1)用chrome登录“微信公众平台”,打开Chrome的"更多工具->开发者工具".
-- 2)点击微信管理后台页面的“用户管理”,取“Request Headers”中的Cookie作为变量cookie_string的值.
-- 3)取url作为要抓取的url.
-- 4)取url中的token作为变量page_token的值.
+- 2)cookie_string: 点击微信管理后台页面的“用户管理”,取“Request Headers”中的Cookie作为变量cookie_string的值.
+- 3)page_token: 取url中的token作为变量page_token的值.
+- 4)page_size: 自己填一个值即可.
+- 5)saved_file: 保存的文件名.
+- 6)取url作为要抓取的url. 如果微信改了url, 需要修改文件contact_spider.py中的变量contact_manage_page_prefix.
 
 # run
 ```

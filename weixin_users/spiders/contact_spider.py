@@ -10,6 +10,7 @@ from weixin_users.weixin_configuration import WeixinCfg
 
 import re
 import json
+import pdb
 
 
 # 使用cookie登录的方法：因为带cookie登录的话，server会认为你是一个已登录的用户，所以就会返回给你一个已登录的内容
@@ -48,43 +49,52 @@ class ContactSpider(CrawlSpider):
 
     def parse(self, response):
         PrintLog.print_start_flag(self.parse.__name__)
+
         sel = Selector(response)
 
+        # pdb.set_trace()
+        # print response.url
+        # print response.body
+
         # 取出friendsList
-        friends = sel.re(r'friendsList :\s*(.*)')
+        '''
+        下面的正则表达式要查找和取出字符串‘user_list : [...],’中间的...内容
+        (?<=           # 断言要匹配的文本的前缀开始
+        user_list : \[ # 查找字符串'user_list : ['
+        )              # 前缀结束
+        [\s\S]*        # 匹配任意文本
+        (?=            # 断言要匹配的文本的后缀开始
+        \],            # 查找字符串'[,'
+        )              # 后缀结束
+        '''
+        friends = sel.re(r'(?<=user_list : \[)[\s\S]*(?=\],)')
         yield self.parse_friends_list(friends_list=friends)
 
-        # 取下一页数据
+        # 尝试取下一页数据
+        #pdb.set_trace()
         PrintLog.print_log("get next page")
         page_count_str_list = sel.re(r'pageCount :\s*(.*)')
-        m = re.findall(r"\d", page_count_str_list[0])
-        self.total_page_count = int(m[0])
-        # print "page_count_num=", self.total_page_count
-        self.page_num += 1 # 下一页码
-        if self.page_num < self.total_page_count:
-            yield self.request_page(page_idx=self.page_num)
+        if page_count_str_list:
+            m = re.findall(r"\d", page_count_str_list[0])
+            self.total_page_count = int(m[0])
+            # print "page_count_num=", self.total_page_count
+            self.page_num += 1 # 下一页码
+            if self.page_num < self.total_page_count:
+                yield self.request_page(page_idx=self.page_num)
 
     # 取出friends_list.contacts的值作为item,交由pipelines处理
     def parse_friends_list(self, friends_list=""):
         PrintLog.print_start_flag(self.parse_friends_list.__name__)
-        # print friends_list
-        # print type(friends_list)
-        # print type(friends_list[0])
 
         # change to <type 'str'> from <type 'unicode'>
-        utf8str = friends_list[0].encode("utf-8")
+        utf8str = friends_list[0].encode("utf-8").strip()
         '''
         utf8str is:
-        ({"contacts":[{"id":"xxxxxx","nick_name":"yingchao1","remark_name":"","group_id":0,"wx_headimg_url":""},
-                      {"id":"xxxxxx","nick_name":"yingchao2","remark_name":"","group_id":0,"wx_headimg_url":""}
-                     ]}).contacts,
+        {id:"xxxxxx",nick_name:"yingchao1",remark_name:"",group_id:[]},
+        {id:"xxxxxx",nick_name:"yingchao2",remark_name:"",group_id:[]}
        '''
-        first = utf8str.index("[")
-        last = utf8str.index("]")
-        # self.get_user_name(friends_str=utf8str[(first+1):last])
         item = WeixinUsersItem()
-        # 去[]内的字符串作为item
-        item['friends_list'] = utf8str[(first+1):last]
+        item['friends_list'] = utf8str
         return item
 
     def convert_cookie_string_to_dict(self, str_of_cookie=""):
@@ -97,14 +107,3 @@ class ContactSpider(CrawlSpider):
             datadict[key] = value
         # print datadict
         return datadict
-
-    def get_user_name(self, friends_str=""):
-        friends_sum= friends_str.split('},')
-        for s in friends_sum:
-            # 先remove所有[]符号
-            s0 = re.sub(r'[{}]', "", s)
-            # 在开始和末尾加上[], 成为json格式
-            s0 = "{"+s0+"}"
-            b = json.loads(s0)
-            print b["nick_name"]
-            print b["remark_name"]

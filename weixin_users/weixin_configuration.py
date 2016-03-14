@@ -10,17 +10,15 @@ class WeixinCfg:
 
     # ------------- START ------------- #
     # 注意: 要修改下面两个变量的值
-    page_token = '613899957'    # 4)取url中的token作为变量page_token的值
+    page_token = '474211568'    # 4)取url中的token作为变量page_token的值
     # 2)点击微信管理后台页面的“用户管理”, 取“Request Headers”中的Cookie作为变量cookie_string的值.
     cookie_string = "noticeLoginFlag=1; " \
-                    "remember_acct=zhuoyc2002%40163.com; " \
+                    "pgv_pvi=9969913856; " \
                     "data_bizuin=3090797880; " \
-                    "data_ticket=AgZEL1JIZ8c10EzAdtEv+wB8AwHegJqEBvPo5S77pAQ=; " \
+                    "data_ticket=AgYZI8wuS2eTNZ2dtBOcBZZSAwHtlnEyjkHBtvmzxYQ=; " \
                     "noticeLoginFlag=1; " \
-                    "remember_acct=18929583193%40163.com; " \
                     "slave_user=gh_808d3c6c3914; " \
-                    "slave_sid=bGFyZlpqRGZGS1JrTEpWMTQ1VVdXZnZBR1pJNFhGUnVKYWNmRXV4bUM1N3dqcUlMRXU3Ump5Z0QwZUN" \
-                    "zM1lsTmk2OXg3YTBiZm05eG1BeWpjMWZDZ2NZNWx2NmY5WVNyRjNMMGlWcEdDTFZGY2lBVGVhbUd0UlBxdXNZbDR2VkI=; " \
+                    "slave_sid=TFdHY2hlR09pNlBYZ05Tb0MzVlZxYkwzcHdISks5SDF5aE9EbGhXU0ZQdDJGN1pnSEtpUGlBV0pFcGxGeDMxMFlyS3JJb1NFUWJ0M3JGaTVjUkE3Tmxva2xBU1RZRGs1RjgzSHo0VkNVS3dkVWx2V0JOUS94Ykw4QWtXRVRORG8=; " \
                     "bizuin=3013511534"
     # ------------- END ------------- #
 

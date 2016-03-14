@@ -10,6 +10,7 @@ import json
 import xlwt
 from weixin_users.print_log import PrintLog
 from weixin_users.weixin_configuration import WeixinCfg
+import pdb
 
 
 class WeixinUsersPipeline(object):
@@ -30,19 +31,23 @@ class WeixinUsersPipeline(object):
 
     def process_item(self, item, spider):
         PrintLog.print_start_flag(self.process_item.__name__)
+        #pdb.set_trace()
         '''
         item['friends_list'] is:
-        {"id":"xxxxxx","nick_name":"yingchao1","remark_name":"","group_id":0,"wx_headimg_url":""},
-        {"id":"xxxxxx","nick_name":"yingchao2","remark_name":"","group_id":0,"wx_headimg_url":""}
+        {id:"xxxxxx",nick_name:"yingchao1",remark_name:"",group_id:[]},
+        {id:"xxxxxx",nick_name:"yingchao2",remark_name:"",group_id:[]}
         '''
         friends_str = item['friends_list']
-        friends_sum= friends_str.split('},')
-        for s in friends_sum:
-            # 先remove所有{}符号
-            s0 = re.sub(r'[{}]', "", s)
-            # 在开始和末尾加上{}, 成为json格式
-            s0 = "{"+s0+"}"
-            b = json.loads(s0)
+        # 下面的正则表达式要查找和取出字符串‘{...}’
+        friends_list= re.findall(r'{[\s\S]*?}', friends_str)
+        for s in friends_list:
+            # 改为json字符串格式
+            s = re.sub(r'\bid\b\b', "\"id\"", s)
+            s = re.sub(r'\bnick_name\b', "\"nick_name\"", s)
+            s = re.sub(r'\bremark_name\b', "\"remark_name\"", s)
+            s = re.sub(r'\bcreate_time\b', "\"create_time\"", s)
+            s = re.sub(r'\bgroup_id\b', "\"group_id\"", s)
+            b = json.loads(s)
             # print b["nick_name"], b["remark_name"]
             self.sheet.write(self.row, self.column, b["nick_name"])
             self.sheet.write(self.row, self.column+1, b["remark_name"])
